@@ -181,15 +181,15 @@ def plot_altair_separate(df_all):
         x=alt.X("INTERVALSTARTTIME:T", axis=alt.Axis(title="Time"))
     )
 
-    price_line = base.mark_line(color="gray").encode(
+    price_line = base.mark_line(color= '#3A7DC1', interpolate='step-after').encode(
         y=alt.Y("Price ($/kWh):Q", axis=alt.Axis(title="Price ($/kWh)"))
     ).properties(height=150)
 
-    soc_line = base.mark_line(color="green").encode(
+    soc_line = base.mark_line(color="#27ae60").encode(
         y=alt.Y("SoE (kWh):Q", axis=alt.Axis(title="State of Energy (kWh)"))
     ).properties(height=150)
 
-    profit_line = base.mark_line(color="blue").encode(
+    profit_line = base.mark_line(color="#D4904E").encode(
         y=alt.Y("Cumulative Profit ($):Q", axis=alt.Axis(title="Cumulative Profit ($)"))
     ).properties(height=150)
 
