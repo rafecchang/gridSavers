@@ -57,3 +57,25 @@ def preprocess_lmp_data(df):
     )
 
     return df
+
+def run_preprocessing():
+    df5 = pd.read_csv('../data/raw/05.csv')
+    df6 = pd.read_csv('../data/raw/06.csv')
+    
+    df5_preprocessed = preprocess_lmp_data(df5)
+    df6_preprocessed = preprocess_lmp_data(df6)
+    
+    df_combined = pd.concat([df5_preprocessed, df6_preprocessed], ignore_index=True)
+    df_combined = df_combined.sort_values(by=['NODE', 'INTERVALSTARTTIME']).reset_index(drop=True)
+    
+    df_combined.to_csv('../data/preprocessed/0506pre.csv', index=False)
+    print("Combined and sorted data saved to 0506pre.csv")
+
+    df_monthly = pd.read_csv('../data/raw/monthly.csv')
+    df_monthly_preprocessed = preprocess_lmp_data(df_monthly)
+    
+    df_monthly_preprocessed.to_csv('../data/preprocessed/monthlypre.csv', index=False)
+    print("Monthly preprocessed data saved to monthlypre.csv")
+
+if __name__ == '__main__':
+    run_preprocessing()

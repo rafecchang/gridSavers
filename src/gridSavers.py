@@ -74,9 +74,9 @@ def optimize_battery_schedule_df_flexible_end(
 def run_weekly_optimization_with_daily_usage(df, initial_soc=66.5, daily_miles=30.1, miles_per_kwh=3.83):
     results = []
     soc = initial_soc
-    energy_needed = round(daily_miles / miles_per_kwh, 2)  # e.g., ~7.86 kWh
-    total_profit = 0.0  # 🔁 running cumulative tracker
-
+    energy_needed = round(daily_miles / miles_per_kwh, 2)  
+    total_profit = 0.0  
+    
     df = df.copy()
     df["TradingWindowStart"] = df["INTERVALSTARTTIME"].apply(
         lambda x: x if x.hour >= 18 else x - timedelta(days=1)
@@ -97,13 +97,13 @@ def run_weekly_optimization_with_daily_usage(df, initial_soc=66.5, daily_miles=3
             df_result, end_soc = optimize_battery_schedule_df_flexible_end(df_window, start_soc=soc)
             df_result["TradingWindowStart"] = window_start
 
-            # ✅ Accumulate profit across days
+            # Accumulate profit across days
             df_result["Cumulative Profit ($)"] = df_result["Profit ($)"].cumsum() + total_profit
             total_profit = df_result["Cumulative Profit ($)"].iloc[-1]
 
             results.append(df_result)
 
-            # 👇 Update SoC for next night, subtract daily driving usage
+            # Update SoC for next night, subtract daily driving usage
             soc = round(end_soc - energy_needed, 2)
             soc = max(soc, 0.2 * 95)
 
@@ -137,19 +137,19 @@ def simulate_all_nodes(full_df, initial_soc=66.5):
     return pd.DataFrame(profit_results).sort_values(by="Total Profit ($)", ascending=False).reset_index(drop=True)
 
 def prepare_visualization(monthly_result, df_prices):
-    # Step 1: Prepare full hourly DataFrame
+    # Prepare full hourly DataFrame
     df_prices = df_prices.copy()
     df_prices["Price ($/kWh)"] = df_prices["MW"] / 1000.0  # Convert MWh → kWh
     df_prices = df_prices[["INTERVALSTARTTIME", "Price ($/kWh)"]]
 
-    # Step 2: Add SoC and cumulative profit from trading results
+    # Add SoC and cumulative profit from trading results
     df_soc = monthly_result[["IntervalStart", "SoE After (kWh)", "Cumulative Profit ($)"]].copy()
     df_soc.columns = ["INTERVALSTARTTIME", "SoE (kWh)", "Cumulative Profit ($)"]
 
     # Merge trading data with full hourly price data
     df_all = pd.merge(df_prices, df_soc, on="INTERVALSTARTTIME", how="left")
 
-    # Step 3: Fill non-trading hours
+    # Fill non-trading hours
     df_all = df_all.sort_values("INTERVALSTARTTIME").reset_index(drop=True)
 
     # Fill cumulative profit forward

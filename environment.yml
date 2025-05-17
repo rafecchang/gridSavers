@@ -1,0 +1,14 @@
+# install with conda env create -f environment.yml
+name: "gridSavers"
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11.*
+  - pandas
+  - numpy
+  - altair
+  - contextlib2
+  - pip
+  - pip:
+      - vegafusion
