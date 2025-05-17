@@ -1,5 +1,5 @@
 # Grid Savers
-A notebook that modeled battery arbtitrage. 
+A notebook that modeled V2G battery arbtitrage at CAISO. 
 
 ### Look around 
 
